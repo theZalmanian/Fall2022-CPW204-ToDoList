@@ -97,7 +97,7 @@ input[type="button"]:hover {
     padding: 1em 1.5em;
     margin-top: .5em;
     list-style-type: none;
-    background: var(--colorError);
+    background: var(--colorAccent1);
     color: var(--colorBackground);
 }
 
@@ -109,7 +109,7 @@ input[type="button"]:hover {
 
 #item-list > .completed {
     text-decoration: line-through;
-    background: var(--colorItem);
+    background: var(--colorAccent2);
 }
 
 .remove-item {
