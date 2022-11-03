@@ -1,15 +1,20 @@
 /* Color */
 :root {
-    --colorPrimary:    #8191d9;
-    --colorSecondary:  #dc4a67;
+    --colorPrimary:    #D295BF;
+    --colorSecondary:  #a89ef4;
     --colorBackground: #002b36;
-    --colorError:      #e54f29;
-    --colorItem:       #4adc84;
+    --colorAccent1:    #c8ffbe;
+    --colorAccent2:    #72705B;
+    --colorRemove:     #4a514d7b;
 }
 
 body {
     background: var(--colorBackground);
     color: var(--colorPrimary);
+}
+
+body, input[type="text"], input[type="button"] {
+    font-family: 'Noto Sans Warang Citi', Arial, Helvetica, sans-serif; 
 }
 
 h1, input[type="text"] {
@@ -23,7 +28,7 @@ h1, input[type="text"] {
 }
 
 #add-item-form, #display-items {
-    width: 26em;
+    width: 25em;
     padding: 1em 1em;
 }
 
@@ -34,16 +39,17 @@ h1, input[type="text"] {
 #error-list {
     padding-left: 1.5em;
     list-style-type: square;
-    color: var(--colorError);
+    color: var(--colorSecondary);
 }
 
 #add-item-form {
+    padding-top: 1.2em;
     border: 3px solid var(--colorSecondary);
 }
 
 label {
     float: left;
-    width: 7em;
+    width: 6.8em;
     text-align: right;
 }
 
@@ -61,22 +67,21 @@ input[type="text"] {
 }
 
 .qs-day {
-    color: var(--colorSecondary) !important;
+    color: var(--colorBackground) !important;
 }
 
 input[type="button"] {
-    width: 8em;   
-    height: 2.5em;
+    padding: .5em .7em;
     margin-top: .5em;
     display: block;
     background: none;
     color: var(--colorPrimary);
-    border: 3px solid var(--colorSecondary);
+    border: 2px solid var(--colorSecondary);
 }
 
 input[type="button"]:hover {
     cursor: pointer;
-    transition: all .5s;
+    transition: all .4s;
     background: var(--colorSecondary);
     color: var(--colorBackground);
 }
@@ -89,7 +94,7 @@ input[type="button"]:hover {
 #item-list > li {
     box-sizing: border-box;
     position: relative;
-    padding: 1em 1em;
+    padding: 1em 1.5em;
     margin-top: .5em;
     list-style-type: none;
     background: var(--colorError);
@@ -98,8 +103,7 @@ input[type="button"]:hover {
 
 #item-list > li:hover {
     cursor: pointer;
-    transition: all .5s;
-    color: black;
+    transition: all .2s;
     opacity: .8;
 }
 
@@ -109,12 +113,13 @@ input[type="button"]:hover {
 }
 
 .remove-item {
-    padding: .4em .5em;
+    padding: 1em .6em;
     position: absolute;
     right: 0;
     top: 0;
 }
 
 .remove-item:hover {
-    background: var(--colorPrimary);
+    transition: all .2s;
+    background: var(--colorRemove);
 }
