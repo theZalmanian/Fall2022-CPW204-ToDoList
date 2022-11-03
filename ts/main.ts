@@ -23,10 +23,13 @@ function addToDoItem():void {
     // clear out previous errors, if any
 
     // check if all data is valid
-
+    if(allDataValid) {
         // create new to-do item
+        let currentItem:ToDoItem = getToDoItem();
 
         // display to-do item
+        displayToDoItem(currentItem);
+    }
 }
 
 /**
@@ -38,7 +41,7 @@ function addToDoItem():void {
  */
  function allDataValid():boolean {
     // setup flag
-    let allDataValid = true;
+    let allDataValid:boolean = true;
 
     // validate title
 
@@ -51,23 +54,28 @@ function addToDoItem():void {
  * @returns The new ToDoItem object
  */
  function getToDoItem():ToDoItem {
-    // get form data
+    // get title
+    let itemTitle:string = getInputByID("title").value;
+
+    // get due date
+    let dueDateTextBox = getInputByID("due-date");
+    let itemDueDate:Date = new Date(dueDateTextBox.value);
     
     // create new instance of ToDoItem
-    //let currentItem:ToDoItem = new ToDoItem();
+    let currentItem:ToDoItem = new ToDoItem(itemTitle, itemDueDate, false);
 
     // returns new instance of ToDoItem
-    //return currentItem;
+    return currentItem;
 }
 
-function displayToDoItem():void {
-    
+function displayToDoItem(currentItem:ToDoItem):void {
+
 }
 
 /**
- * Sets up an onclick event for a button.
- * @param id The button's id.
- * @param useFunction The function to be called when button is clicked.
+ * Sets up an onclick event for a button
+ * @param id The button's id
+ * @param useFunction The function to be called when button is clicked
  */
  function setupButton(id:string, useFunction:() => void):void {
     let button:HTMLElement = getByID(id);
@@ -76,7 +84,7 @@ function displayToDoItem():void {
 
 /**
  * Gets an HTML Input Element by it's ID
- * @param id - The input's id.
+ * @param id - The input's id
  * @returns The corresponding HTML Input Element
  */
  function getInputByID(id:string):HTMLInputElement {
@@ -85,7 +93,7 @@ function displayToDoItem():void {
 
 /**
  * Shortened form of the document.getElementById method
- * @param id - The element's id.
+ * @param id - The element's id
  * @returns The corresponding HTML Element
  */
  function getByID(id:string):HTMLElement {

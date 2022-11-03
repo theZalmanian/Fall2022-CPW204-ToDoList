@@ -10,14 +10,23 @@ window.onload = function () {
     setupButton("add-item", addToDoItem);
 };
 function addToDoItem() {
+    if (allDataValid) {
+        var currentItem = getToDoItem();
+        displayToDoItem(currentItem);
+    }
 }
 function allDataValid() {
     var allDataValid = true;
     return allDataValid;
 }
 function getToDoItem() {
+    var itemTitle = getInputByID("title").value;
+    var dueDateTextBox = getInputByID("due-date");
+    var itemDueDate = new Date(dueDateTextBox.value);
+    var currentItem = new ToDoItem(itemTitle, itemDueDate, false);
+    return currentItem;
 }
-function displayToDoItem() {
+function displayToDoItem(currentItem) {
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);
