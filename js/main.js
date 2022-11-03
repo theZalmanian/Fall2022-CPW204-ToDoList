@@ -1,8 +1,7 @@
 var ToDoItem = (function () {
-    function ToDoItem(itemTitle, itemDueDate, isCompleted) {
+    function ToDoItem(itemTitle, itemDueDate) {
         this.itemTitle = itemTitle;
         this.itemDueDate = itemDueDate;
-        this.isCompleted = isCompleted;
     }
     return ToDoItem;
 }());
@@ -23,7 +22,7 @@ function getToDoItem() {
     var itemTitle = getInputByID("title").value;
     var dueDateTextBox = getInputByID("due-date");
     var itemDueDate = new Date(dueDateTextBox.value);
-    var currentItem = new ToDoItem(itemTitle, itemDueDate, false);
+    var currentItem = new ToDoItem(itemTitle, itemDueDate);
     return currentItem;
 }
 function displayToDoItem(currentItem) {
@@ -32,8 +31,18 @@ function displayToDoItem(currentItem) {
     var itemDueDate = currentItem.itemDueDate.toLocaleDateString();
     var itemInfo = itemTitle + " by " + itemDueDate;
     itemContainer.innerText = itemInfo;
+    itemContainer.onclick = toggleCompletion;
     var displayItemsList = getByID("item-list");
     displayItemsList.appendChild(itemContainer);
+}
+function toggleCompletion() {
+    var currentItem = this;
+    if (currentItem.className == "completed") {
+        currentItem.classList.remove("completed");
+    }
+    else {
+        currentItem.classList.add("completed");
+    }
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);

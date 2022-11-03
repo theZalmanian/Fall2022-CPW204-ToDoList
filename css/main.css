@@ -74,9 +74,16 @@ input[type="button"]:hover {
     padding: 0;
 }
 
+.completed {
+    text-decoration: line-through;
+    background: var(--colorError) !important;
+}
+
 #item-list li {
+    box-sizing: border-box;
     cursor: pointer;
     padding: .5em;
+    margin-top: .5em;
     list-style-type: none;
     background: var(--colorItem);
     color: var(--colorBackground);

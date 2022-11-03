@@ -1,17 +1,15 @@
 class ToDoItem {
     itemTitle:string;
     itemDueDate:Date;
-    isCompleted:boolean;
 
-    constructor(itemTitle:string, itemDueDate:Date, isCompleted:boolean) {
+    constructor(itemTitle:string, itemDueDate:Date) {
         this.itemTitle = itemTitle;
         this.itemDueDate = itemDueDate;
-        this.isCompleted = isCompleted;
     }
 }
 
 window.onload = function():void {
-    // setup onclick event for add game button
+    // setup onclick event for add item button
     setupButton("add-item", addToDoItem);
 }
 
@@ -62,7 +60,7 @@ function addToDoItem():void {
     let itemDueDate:Date = new Date(dueDateTextBox.value);
     
     // create new instance of ToDoItem
-    let currentItem:ToDoItem = new ToDoItem(itemTitle, itemDueDate, false);
+    let currentItem:ToDoItem = new ToDoItem(itemTitle, itemDueDate);
 
     // returns new instance of ToDoItem
     return currentItem;
@@ -74,23 +72,46 @@ function addToDoItem():void {
  */
 function displayToDoItem(currentItem:ToDoItem):void {
     // create new li
-    let itemContainer = document.createElement("li");
+    let itemContainer:HTMLElement = document.createElement("li");
     
     // get to-do item's title
-    let itemTitle = currentItem.itemTitle;
+    let itemTitle:string = currentItem.itemTitle;
 
     // get to-do item's due date formatted as mm/dd/yyyy
-    let itemDueDate = currentItem.itemDueDate.toLocaleDateString();
+    let itemDueDate:string = currentItem.itemDueDate.toLocaleDateString();
 
     // place to-do item's info in container
     let itemInfo:string = itemTitle + " by " + itemDueDate;
     itemContainer.innerText = itemInfo;
+
+    // setup onclick event for li 
+    itemContainer.onclick = toggleCompletion;
 
     // grab the ul where to-do items are displayed
     let displayItemsList:HTMLElement = getByID("item-list");
 
     // place new li within it
     displayItemsList.appendChild(itemContainer);
+}
+
+/**
+ * When a to-do item is clicked, marks it as completed.
+ * If it was already completed, marks as incomplete
+ */
+function toggleCompletion():void {
+    // get item that was clicked
+    let currentItem:HTMLElement = <HTMLElement> this;
+
+    // if already marked as completed, mark as incomplete
+    if(currentItem.className == "completed") {
+        currentItem.classList.remove("completed");
+    }
+
+    // if marked as incomplete, mark it as completed
+    else {
+        // give it the completed class
+        currentItem.classList.add("completed");
+    }
 }
 
 /**
