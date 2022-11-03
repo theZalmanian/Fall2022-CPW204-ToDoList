@@ -68,8 +68,29 @@ function addToDoItem():void {
     return currentItem;
 }
 
+/**
+ * Displays the latest form submission at the bottom of the page
+ * @param currentItem The current ToDo Item
+ */
 function displayToDoItem(currentItem:ToDoItem):void {
+    // create new li
+    let itemContainer = document.createElement("li");
+    
+    // get to-do item's title
+    let itemTitle = currentItem.itemTitle;
 
+    // get to-do item's due date formatted as mm/dd/yyyy
+    let itemDueDate = currentItem.itemDueDate.toLocaleDateString();
+
+    // place to-do item's info in container
+    let itemInfo:string = itemTitle + " by " + itemDueDate;
+    itemContainer.innerText = itemInfo;
+
+    // grab the ul where to-do items are displayed
+    let displayItemsList:HTMLElement = getByID("item-list");
+
+    // place new li within it
+    displayItemsList.appendChild(itemContainer);
 }
 
 /**

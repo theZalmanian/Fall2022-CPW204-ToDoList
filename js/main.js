@@ -27,6 +27,13 @@ function getToDoItem() {
     return currentItem;
 }
 function displayToDoItem(currentItem) {
+    var itemContainer = document.createElement("li");
+    var itemTitle = currentItem.itemTitle;
+    var itemDueDate = currentItem.itemDueDate.toLocaleDateString();
+    var itemInfo = itemTitle + " by " + itemDueDate;
+    itemContainer.innerText = itemInfo;
+    var displayItemsList = getByID("item-list");
+    displayItemsList.appendChild(itemContainer);
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);
