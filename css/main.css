@@ -1,0 +1,12 @@
+/* Color */
+:root {
+    --colorPrimary:    #e59d29;
+    --colorSecondary:  #128ad4;
+    --colorBackground: #002b36;
+    --colorError:      #e54f29;
+}
+
+body {
+    background: var(--colorBackground);
+    color: var(--colorPrimary);
+}
