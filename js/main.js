@@ -9,13 +9,21 @@ window.onload = function () {
     setupButton("add-item", addToDoItem);
 };
 function addToDoItem() {
-    if (allDataValid) {
+    clearPreviousErrors();
+    if (allDataValid()) {
         var currentItem = getToDoItem();
         displayToDoItem(currentItem);
     }
 }
 function allDataValid() {
     var allDataValid = true;
+    if (isInputEmpty("title")) {
+        displayError("You must enter an item title!");
+        allDataValid = false;
+    }
+    if (!isValidDate("due-date")) {
+        allDataValid = false;
+    }
     return allDataValid;
 }
 function getToDoItem() {
@@ -43,6 +51,38 @@ function toggleCompletion() {
     else {
         currentItem.classList.add("completed");
     }
+}
+function displayError(errorMessage) {
+    var newError = document.createElement("li");
+    newError.classList.add("error");
+    newError.innerText = errorMessage;
+    var displayErrorsList = getByID("error-list");
+    displayErrorsList.appendChild(newError);
+}
+function clearPreviousErrors() {
+    var errorSummary = getByID("error-list");
+    errorSummary.innerHTML = "";
+}
+function isInputEmpty(id) {
+    var userInput = getInputByID(id).value;
+    if (userInput == "" || userInput.trim() == "") {
+        return true;
+    }
+    return false;
+}
+function isValidDate(id) {
+    var userInput = getInputByID(id).value;
+    if (isInputEmpty(id)) {
+        displayError("You must select a due date!");
+        return false;
+    }
+    var dateFormat = /^\d{1,2}\/\d{1,2}\/\d{4}$/g;
+    var isDate = dateFormat.test(userInput);
+    if (!isDate) {
+        displayError("Please enter due date as mm/dd/yyyy");
+        return false;
+    }
+    return true;
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);

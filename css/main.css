@@ -22,13 +22,27 @@ h1, input[type="text"] {
     border-radius: .5em;
 }
 
-#display-errors, #add-item-form, 
-#display-items {
+#add-item-form, #display-items {
     width: 26em;
 }
 
 #add-item-form, #display-items {
     padding: 1em 1em;
+}
+
+#display-errors {
+    width: fit-content;
+}
+
+#item-list {
+    margin: 0;
+    padding: 0;
+}
+
+#error-list {
+    padding-left: 1.5em;
+    list-style-type: square;
+    color: var(--colorError);
 }
 
 #add-item-form {
@@ -73,11 +87,6 @@ input[type="button"]:hover {
     transition: all .5s;
     background: var(--colorSecondary);
     color: var(--colorBackground);
-}
-
-#item-list {
-    margin: 0;
-    padding: 0;
 }
 
 #item-list li {

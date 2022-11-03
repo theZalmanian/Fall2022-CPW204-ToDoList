@@ -19,9 +19,10 @@ window.onload = function():void {
 */
 function addToDoItem():void {
     // clear out previous errors, if any
+    clearPreviousErrors();
 
     // check if all data is valid
-    if(allDataValid) {
+    if(allDataValid()) {
         // create new to-do item
         let currentItem:ToDoItem = getToDoItem();
 
@@ -42,6 +43,15 @@ function addToDoItem():void {
     let allDataValid:boolean = true;
 
     // validate title
+    if(isInputEmpty("title")) {
+        displayError("You must enter an item title!");
+        allDataValid = false;
+    }
+
+    // validate due date
+    if(!isValidDate("due-date")) {
+        allDataValid = false;
+    }
 
     return allDataValid;
  }
@@ -71,7 +81,7 @@ function addToDoItem():void {
  * @param currentItem The current ToDo Item
  */
 function displayToDoItem(currentItem:ToDoItem):void {
-    // create new li
+    // create new li to hold item info
     let itemContainer:HTMLElement = document.createElement("li");
     
     // get to-do item's title
@@ -112,6 +122,85 @@ function toggleCompletion():void {
         // give it the completed class
         currentItem.classList.add("completed");
     }
+}
+
+/**
+ * Displays the given error message above the form
+ */
+ function displayError(errorMessage:string):void {
+    // create an li to hold the error message
+    let newError:HTMLElement = document.createElement("li");
+
+    // give it the error class
+    newError.classList.add("error");
+
+    // place error message within it
+    newError.innerText = errorMessage;
+
+    // grab the ul where errors are displayed
+    let displayErrorsList:HTMLElement = getByID("error-list");
+
+    // place new li within it
+    displayErrorsList.appendChild(newError);
+}
+
+/**
+ * Clears out all previous errors when called
+ */
+ function clearPreviousErrors():void {
+    let errorSummary = getByID("error-list");
+    errorSummary.innerHTML = "";
+}
+
+/**
+ * Checks if input is empty, or made up of whitespace
+ * @param id The input's id.
+ * @returns True if input is empty, False if not
+ */
+ function isInputEmpty(id:string):boolean {
+    // get value from textbox
+    let userInput:string = getInputByID(id).value;
+    
+    // check if user input is empty
+    if(userInput == "" || userInput.trim() == "") {
+        return true;
+    }
+    
+    // if textbox contains text
+    return false;
+}
+
+/**
+ * Checks if the date entered is formatted correctly. 
+ * If date is not valid, displays the appropriate error message(s)
+ * @param id The input's id
+ * @returns True if date is valid, False if not.
+ */
+ function isValidDate(id:string):boolean {
+    // get value from textbox
+    let userInput:string = getInputByID(id).value;
+
+    // check if empty string
+    if(isInputEmpty(id)) {
+        displayError("You must select a due date!");
+        return false;
+    } 
+    
+    // setup regular expression for validation
+    // mm/dd/yyyy or m/d/yyyy
+    let dateFormat = /^\d{1,2}\/\d{1,2}\/\d{4}$/g;
+
+    // check if user input matches proper formatting
+    let isDate = dateFormat.test(userInput);
+
+    // if formatting is incorrect, show corresponding error
+    if(!isDate) {
+        displayError("Please enter due date as mm/dd/yyyy");
+        return false;
+    }
+    
+    // if date is formatted correctly
+    return true;
 }
 
 /**
