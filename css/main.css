@@ -1,10 +1,10 @@
 /* Color */
 :root {
-    --colorPrimary:    #d9b781;
-    --colorSecondary:  #a94adc;
+    --colorPrimary:    #8191d9;
+    --colorSecondary:  #dc4a67;
     --colorBackground: #002b36;
     --colorError:      #e54f29;
-    --colorItem:       #a94adc;
+    --colorItem:       #4adc84;
 }
 
 body {
@@ -12,12 +12,12 @@ body {
     color: var(--colorPrimary);
 }
 
-h1 {
+h1, input[type="text"] {
     text-align: center;
 }
 
-#add-item-form, input[type="button"], 
-#display-items, #display-errors {
+#display-errors, #add-item-form, input[type="button"], 
+#display-items, #item-list li {
     margin: auto;
     border-radius: .5em;
 }
@@ -29,6 +29,9 @@ h1 {
 
 #add-item-form, #display-items {
     padding: 1em 1em;
+}
+
+#add-item-form {
     border: 3px solid var(--colorSecondary);
 }
 
@@ -45,6 +48,14 @@ input[type="text"] {
     background: var(--colorPrimary);
     color: var(--colorBackground);
     border: 1px solid var(--colorBackground);
+}
+
+.qs-datepicker {
+    background: var(--colorPrimary);
+}
+
+.qs-day {
+    color: var(--colorSecondary) !important;
 }
 
 input[type="button"] {
@@ -64,19 +75,9 @@ input[type="button"]:hover {
     color: var(--colorBackground);
 }
 
-#display-items {
-    border: none;
-    margin-top: 1em;
-}
-
 #item-list {
     margin: 0;
     padding: 0;
-}
-
-.completed {
-    text-decoration: line-through;
-    background: var(--colorError) !important;
 }
 
 #item-list li {
@@ -88,4 +89,9 @@ input[type="button"]:hover {
     background: var(--colorItem);
     color: var(--colorBackground);
     text-align: center;
+}
+
+.completed {
+    text-decoration: line-through;
+    background: var(--colorError) !important;
 }
