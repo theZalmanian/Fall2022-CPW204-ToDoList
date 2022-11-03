@@ -35,7 +35,13 @@
     <script src="https://unpkg.com/js-datepicker"></script>
     <script>
         // setup datepicker
-        const picker = datepicker("#due-date");
+        const picker = datepicker("#due-date", {
+            formatter: (input, date, instance) => {
+                const value = date.toLocaleDateString()
+                // This will display the date as mm/dd/yyyy
+                input.value = value;
+            },
+        });
 
         // set minimum date to today's date
         picker.setMin(new Date()); 

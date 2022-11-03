@@ -1,9 +1,10 @@
 /* Color */
 :root {
     --colorPrimary:    #d9b781;
-    --colorSecondary:  #629dc2;
+    --colorSecondary:  #a94adc;
     --colorBackground: #002b36;
     --colorError:      #e54f29;
+    --colorItem:       #a94adc;
 }
 
 body {
@@ -11,19 +12,44 @@ body {
     color: var(--colorPrimary);
 }
 
+h1 {
+    text-align: center;
+}
+
+#add-item-form, input[type="button"], 
+#display-items, #display-errors {
+    margin: auto;
+    border-radius: .5em;
+}
+
+#display-errors, #add-item-form, 
+#display-items {
+    width: 26em;
+}
+
+#add-item-form, #display-items {
+    padding: 1em 1em;
+    border: 3px solid var(--colorSecondary);
+}
+
+label {
+    float: left;
+    width: 7em;
+    text-align: right;
+}
+
 input[type="text"] {
+    width: 18.5em;   
+    height: 1.5em;
     margin: 0 .5em .5em;
     background: var(--colorPrimary);
     color: var(--colorBackground);
     border: 1px solid var(--colorBackground);
 }
 
-input[type="text"] {
-    width: 11em;   
-    height: 1.5em;
-}
-
 input[type="button"] {
+    width: 8em;   
+    height: 2.5em;
     margin-top: .5em;
     display: block;
     background: none;
@@ -36,4 +62,23 @@ input[type="button"]:hover {
     transition: all .5s;
     background: var(--colorSecondary);
     color: var(--colorBackground);
+}
+
+#display-items {
+    border: none;
+    margin-top: 1em;
+}
+
+#item-list {
+    margin: 0;
+    padding: 0;
+}
+
+#item-list li {
+    cursor: pointer;
+    padding: .5em;
+    list-style-type: none;
+    background: var(--colorItem);
+    color: var(--colorBackground);
+    text-align: center;
 }
