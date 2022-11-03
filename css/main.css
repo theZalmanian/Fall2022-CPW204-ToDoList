@@ -17,26 +17,18 @@ h1, input[type="text"] {
 }
 
 #display-errors, #add-item-form, input[type="button"], 
-#display-items, #item-list li {
+#display-items, #item-list > li, .remove-item {
     margin: auto;
     border-radius: .5em;
 }
 
 #add-item-form, #display-items {
     width: 26em;
-}
-
-#add-item-form, #display-items {
     padding: 1em 1em;
 }
 
 #display-errors {
     width: fit-content;
-}
-
-#item-list {
-    margin: 0;
-    padding: 0;
 }
 
 #error-list {
@@ -89,18 +81,40 @@ input[type="button"]:hover {
     color: var(--colorBackground);
 }
 
-#item-list li {
-    box-sizing: border-box;
-    cursor: pointer;
-    padding: .5em;
-    margin-top: .5em;
-    list-style-type: none;
-    background: var(--colorItem);
-    color: var(--colorBackground);
-    text-align: center;
+#item-list {
+    margin: 0;
+    padding: 0;
 }
 
-.completed {
+#item-list > li {
+    box-sizing: border-box;
+    position: relative;
+    padding: 1em 1em;
+    margin-top: .5em;
+    list-style-type: none;
+    background: var(--colorError);
+    color: var(--colorBackground);
+}
+
+#item-list > li:hover {
+    cursor: pointer;
+    transition: all .5s;
+    color: black;
+    opacity: .8;
+}
+
+#item-list > .completed {
     text-decoration: line-through;
-    background: var(--colorError) !important;
+    background: var(--colorItem);
+}
+
+.remove-item {
+    padding: .4em .5em;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.remove-item:hover {
+    background: var(--colorPrimary);
 }

@@ -82,7 +82,7 @@ function addToDoItem():void {
  */
 function displayToDoItem(currentItem:ToDoItem):void {
     // create new li to hold item info
-    let itemContainer:HTMLElement = document.createElement("li");
+    let itemContainer:HTMLLIElement = document.createElement("li");
     
     // get to-do item's title
     let itemTitle:string = currentItem.itemTitle;
@@ -100,24 +100,70 @@ function displayToDoItem(currentItem:ToDoItem):void {
     // grab the ul where to-do items are displayed
     let displayItemsList:HTMLElement = getByID("item-list");
 
-    // place new li within it
+    // place the new li within it
     displayItemsList.appendChild(itemContainer);
+
+    // create remove-item span and attach to end of new li
+    createRemoveItemSpan(itemContainer);
+}
+
+/**
+ * Creates a span to act as a 'remove item' button,
+ * and adds it to the end of the current item's container
+ * @param currentItemContainer The container for the current ToDo Item
+ */
+function createRemoveItemSpan(currentItemContainer:HTMLLIElement):void {
+    // create a span
+    let span:HTMLSpanElement = document.createElement("span");
+
+    // give it the remove-item class
+    span.classList.add("remove-item");
+
+    // create a unicode multiplication sign
+    let x:Text = document.createTextNode("\u00D7");
+
+    // place it in the span
+    span.appendChild(x);
+
+    // add the span to the end of the to-do item container
+    currentItemContainer.appendChild(span);
+
+    // setup onclick event for span
+    span.onclick = removeItem;
+}
+
+/**
+ * When a 'remove-item' span is clicked, removes
+ * the corresponding to-do item from the items list
+ */
+function removeItem():void {
+    // get span that was clicked
+    let currentSpan:HTMLElement = <HTMLElement> this;
+
+    // get the li that the span belongs to
+    let li:HTMLElement = currentSpan.parentElement;
+
+    // grab the ul where to-do items are displayed
+    let displayItemsList:HTMLElement = getByID("item-list");
+
+    // remove the to-do item from the list
+    displayItemsList.removeChild(li);
 }
 
 /**
  * When a to-do item is clicked, marks it as completed.
- * If it was already completed, marks as incomplete
+ * If it was already completed, marks as uncompleted
  */
 function toggleCompletion():void {
     // get item that was clicked
     let currentItem:HTMLElement = <HTMLElement> this;
 
-    // if already marked as completed, mark as incomplete
+    // if already marked as completed, mark as uncompleted
     if(currentItem.className == "completed") {
         currentItem.classList.remove("completed");
     }
 
-    // if marked as incomplete, mark it as completed
+    // if marked as uncompleted, mark it as completed
     else {
         // give it the completed class
         currentItem.classList.add("completed");

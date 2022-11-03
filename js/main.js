@@ -42,6 +42,21 @@ function displayToDoItem(currentItem) {
     itemContainer.onclick = toggleCompletion;
     var displayItemsList = getByID("item-list");
     displayItemsList.appendChild(itemContainer);
+    createRemoveItemSpan(itemContainer);
+}
+function createRemoveItemSpan(currentItemContainer) {
+    var span = document.createElement("span");
+    span.classList.add("remove-item");
+    var x = document.createTextNode("\u00D7");
+    span.appendChild(x);
+    currentItemContainer.appendChild(span);
+    span.onclick = removeItem;
+}
+function removeItem() {
+    var currentSpan = this;
+    var li = currentSpan.parentElement;
+    var displayItemsList = getByID("item-list");
+    displayItemsList.removeChild(li);
 }
 function toggleCompletion() {
     var currentItem = this;
