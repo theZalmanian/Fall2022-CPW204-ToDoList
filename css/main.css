@@ -1,6 +1,6 @@
 /* Color */
 :root {
-    --colorPrimary:    #e59d29;
+    --colorPrimary:    #d9b781;
     --colorSecondary:  #128ad4;
     --colorBackground: #002b36;
     --colorError:      #e54f29;
@@ -9,4 +9,16 @@
 body {
     background: var(--colorBackground);
     color: var(--colorPrimary);
+}
+
+input[type="text"] {
+    margin: 0 .5em .5em;
+    background: var(--colorPrimary);
+    color: var(--colorBackground);
+    border: 1px solid var(--colorBackground);
+}
+
+input[type="text"] {
+    width: 11em;   
+    height: 1.5em;
 }
