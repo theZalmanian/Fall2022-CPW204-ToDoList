@@ -1,7 +1,7 @@
 /* Color */
 :root {
     --colorPrimary:    #d9b781;
-    --colorSecondary:  #128ad4;
+    --colorSecondary:  #629dc2;
     --colorBackground: #002b36;
     --colorError:      #e54f29;
 }
@@ -21,4 +21,19 @@ input[type="text"] {
 input[type="text"] {
     width: 11em;   
     height: 1.5em;
+}
+
+input[type="button"] {
+    margin-top: .5em;
+    display: block;
+    background: none;
+    color: var(--colorPrimary);
+    border: 3px solid var(--colorSecondary);
+}
+
+input[type="button"]:hover {
+    cursor: pointer;
+    transition: all .5s;
+    background: var(--colorSecondary);
+    color: var(--colorBackground);
 }
