@@ -29,6 +29,9 @@ function addToDoItem():void {
         // display to-do item
         displayToDoItem(currentItem);
     }
+
+    // clear out inputs
+    clearTextBoxes();
 }
 
 /**
@@ -196,6 +199,20 @@ function toggleCompletion():void {
  function clearPreviousErrors():void {
     let errorSummary = getByID("error-list");
     errorSummary.innerHTML = "";
+}
+
+function clearTextBoxes():void {
+    // grab all textboxes on form
+    let allTextBoxes = document.querySelectorAll(".textbox");
+
+    // run through all textboxes
+    for(let i = 0; i < allTextBoxes.length; i++) {
+        // grab current textbox
+        let currentTextBox = <HTMLInputElement> allTextBoxes[i];
+
+        // set it's value to empty string
+        currentTextBox.value = "";
+    }
 }
 
 /**

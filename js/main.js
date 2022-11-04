@@ -14,6 +14,7 @@ function addToDoItem() {
         var currentItem = getToDoItem();
         displayToDoItem(currentItem);
     }
+    clearTextBoxes();
 }
 function allDataValid() {
     var allDataValid = true;
@@ -77,6 +78,13 @@ function displayError(errorMessage) {
 function clearPreviousErrors() {
     var errorSummary = getByID("error-list");
     errorSummary.innerHTML = "";
+}
+function clearTextBoxes() {
+    var allTextBoxes = document.querySelectorAll(".textbox");
+    for (var i = 0; i < allTextBoxes.length; i++) {
+        var currentTextBox = allTextBoxes[i];
+        currentTextBox.value = "";
+    }
 }
 function isInputEmpty(id) {
     var userInput = getInputByID(id).value;
