@@ -28,10 +28,10 @@ function addToDoItem():void {
 
         // display to-do item
         displayToDoItem(currentItem);
-    }
 
-    // clear out inputs
-    clearTextBoxes();
+        // clear out inputs
+        clearTextBoxes();
+    }
 }
 
 /**
@@ -94,11 +94,10 @@ function displayToDoItem(currentItem:ToDoItem):void {
     let itemDueDate:string = currentItem.itemDueDate.toLocaleDateString();
 
     // place to-do item's info in container
-    let itemInfo:string = itemTitle + " by " + itemDueDate;
-    itemContainer.innerText = itemInfo;
+    itemContainer.innerText = itemTitle + " by " + itemDueDate;
 
     // setup onclick event for li 
-    itemContainer.onclick = toggleCompletion;
+    itemContainer.onclick = toggleCompletionStatus;
 
     // grab the ul where to-do items are displayed
     let displayItemsList:HTMLElement = getByID("item-list");
@@ -123,10 +122,10 @@ function createRemoveItemSpan(currentItemContainer:HTMLLIElement):void {
     span.classList.add("remove-item");
 
     // create a unicode multiplication sign
-    let x:Text = document.createTextNode("\u00D7");
+    let removeIcon:Text = document.createTextNode("\u00D7");
 
-    // place it in the span
-    span.appendChild(x);
+    // place it in the span to represent 'remove button' 
+    span.appendChild(removeIcon);
 
     // add the span to the end of the to-do item container
     currentItemContainer.appendChild(span);
@@ -144,20 +143,20 @@ function removeItem():void {
     let currentSpan:HTMLElement = <HTMLElement> this;
 
     // get the li that the span belongs to
-    let li:HTMLElement = currentSpan.parentElement;
+    let itemContainer:HTMLElement = currentSpan.parentElement;
 
     // grab the ul where to-do items are displayed
     let displayItemsList:HTMLElement = getByID("item-list");
 
     // remove the to-do item from the list
-    displayItemsList.removeChild(li);
+    displayItemsList.removeChild(itemContainer);
 }
 
 /**
  * When a to-do item is clicked, marks it as completed.
  * If it was already completed, marks as uncompleted
  */
-function toggleCompletion():void {
+function toggleCompletionStatus():void {
     // get item that was clicked
     let currentItem:HTMLElement = <HTMLElement> this;
 
@@ -198,9 +197,12 @@ function toggleCompletion():void {
  */
  function clearPreviousErrors():void {
     let errorSummary = getByID("error-list");
-    errorSummary.innerHTML = "";
+    errorSummary.innerText = "";
 }
 
+/**
+ * Clears out all textboxes on the form when called
+ */
 function clearTextBoxes():void {
     // grab all textboxes on form
     let allTextBoxes = document.querySelectorAll(".textbox");
@@ -225,7 +227,7 @@ function clearTextBoxes():void {
     let userInput:string = getInputByID(id).value;
     
     // check if user input is empty
-    if(userInput == "" || userInput.trim() == "") {
+    if(userInput.trim() == "") {
         return true;
     }
     

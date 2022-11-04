@@ -13,8 +13,8 @@ function addToDoItem() {
     if (allDataValid()) {
         var currentItem = getToDoItem();
         displayToDoItem(currentItem);
+        clearTextBoxes();
     }
-    clearTextBoxes();
 }
 function allDataValid() {
     var allDataValid = true;
@@ -38,9 +38,8 @@ function displayToDoItem(currentItem) {
     var itemContainer = document.createElement("li");
     var itemTitle = currentItem.itemTitle;
     var itemDueDate = currentItem.itemDueDate.toLocaleDateString();
-    var itemInfo = itemTitle + " by " + itemDueDate;
-    itemContainer.innerText = itemInfo;
-    itemContainer.onclick = toggleCompletion;
+    itemContainer.innerText = itemTitle + " by " + itemDueDate;
+    itemContainer.onclick = toggleCompletionStatus;
     var displayItemsList = getByID("item-list");
     displayItemsList.appendChild(itemContainer);
     createRemoveItemSpan(itemContainer);
@@ -48,18 +47,18 @@ function displayToDoItem(currentItem) {
 function createRemoveItemSpan(currentItemContainer) {
     var span = document.createElement("span");
     span.classList.add("remove-item");
-    var x = document.createTextNode("\u00D7");
-    span.appendChild(x);
+    var removeIcon = document.createTextNode("\u00D7");
+    span.appendChild(removeIcon);
     currentItemContainer.appendChild(span);
     span.onclick = removeItem;
 }
 function removeItem() {
     var currentSpan = this;
-    var li = currentSpan.parentElement;
+    var itemContainer = currentSpan.parentElement;
     var displayItemsList = getByID("item-list");
-    displayItemsList.removeChild(li);
+    displayItemsList.removeChild(itemContainer);
 }
-function toggleCompletion() {
+function toggleCompletionStatus() {
     var currentItem = this;
     if (currentItem.className == "completed") {
         currentItem.classList.remove("completed");
@@ -77,7 +76,7 @@ function displayError(errorMessage) {
 }
 function clearPreviousErrors() {
     var errorSummary = getByID("error-list");
-    errorSummary.innerHTML = "";
+    errorSummary.innerText = "";
 }
 function clearTextBoxes() {
     var allTextBoxes = document.querySelectorAll(".textbox");
@@ -88,7 +87,7 @@ function clearTextBoxes() {
 }
 function isInputEmpty(id) {
     var userInput = getInputByID(id).value;
-    if (userInput == "" || userInput.trim() == "") {
+    if (userInput.trim() == "") {
         return true;
     }
     return false;
