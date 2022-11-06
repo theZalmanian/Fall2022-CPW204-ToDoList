@@ -1,34 +1,41 @@
 class ToDoItem {
-    itemTitle:string;
-    itemDueDate:Date;
+    title:string;
+    dueDate:Date;
 
     constructor(itemTitle:string, itemDueDate:Date) {
-        this.itemTitle = itemTitle;
-        this.itemDueDate = itemDueDate;
+        this.title = itemTitle;
+        this.dueDate = itemDueDate;
     }
 }
 
 window.onload = function():void {
     // setup onclick event for add item button
-    setupButton("add-item", addToDoItem);
+    setupButton("add-item", addItem);
+
+    // load saved items, if any
+    loadSavedItems();
 }
 
 /** 
- * This function is called when the add item button is clicked,
- * and displays the to-do item if all form input is valid
+ * This function is called when the add item button is clicked.
+ * Creates and displays the to-do item at the bottom of the form,
+ * if all form input is valid
 */
-function addToDoItem():void {
+function addItem():void {
     // clear out previous errors, if any
-    clearPreviousErrors();
+    clearErrors();
 
     // check if all data is valid
     if(allDataValid()) {
         // create new to-do item
-        let currentItem:ToDoItem = getToDoItem();
+        let currentItem:ToDoItem = createItem();
 
         // display to-do item
-        displayToDoItem(currentItem);
+        displayItem(currentItem);
 
+        // save item in local storage
+        saveItem(currentItem);
+        
         // clear out inputs
         clearTextBoxes();
     }
@@ -64,12 +71,12 @@ function addToDoItem():void {
  * data from the form
  * @returns The new ToDoItem object
  */
- function getToDoItem():ToDoItem {
+ function createItem():ToDoItem {
     // get title
     let itemTitle:string = getInputByID("title").value;
 
     // get due date
-    let dueDateTextBox = getInputByID("due-date");
+    let dueDateTextBox:HTMLInputElement = getInputByID("due-date");
     let itemDueDate:Date = new Date(dueDateTextBox.value);
     
     // create new instance of ToDoItem
@@ -80,21 +87,24 @@ function addToDoItem():void {
 }
 
 /**
- * Displays the latest form submission at the bottom of the page
+ * Displays a given item at the bottom of the page
  * @param currentItem The current ToDo Item
  */
-function displayToDoItem(currentItem:ToDoItem):void {
+function displayItem(currentItem:ToDoItem):void {
     // create new li to hold item info
     let itemContainer:HTMLLIElement = document.createElement("li");
     
     // get to-do item's title
-    let itemTitle:string = currentItem.itemTitle;
+    let itemTitle:string = currentItem.title;
 
-    // get to-do item's due date formatted as mm/dd/yyyy
-    let itemDueDate:string = currentItem.itemDueDate.toLocaleDateString();
+    // get to-do item's due date as a date
+    let itemDueDate:Date = new Date(currentItem.dueDate.toString());
+
+    // format the date as mm/dd/yyyy
+    let itemDueDateString:string = itemDueDate.toLocaleDateString();
 
     // place to-do item's info in container
-    itemContainer.innerText = itemTitle + " by " + itemDueDate;
+    itemContainer.innerText = itemTitle + " by " + itemDueDateString;
 
     // setup onclick event for li 
     itemContainer.onclick = toggleCompletionStatus;
@@ -112,9 +122,9 @@ function displayToDoItem(currentItem:ToDoItem):void {
 /**
  * Creates a span to act as a 'remove item' button,
  * and adds it to the end of the current item's container
- * @param currentItemContainer The container for the current ToDo Item
+ * @param currentContainer The container for the current ToDo Item
  */
-function createRemoveItemSpan(currentItemContainer:HTMLLIElement):void {
+function createRemoveItemSpan(currentContainer:HTMLLIElement):void {
     // create a span
     let span:HTMLSpanElement = document.createElement("span");
 
@@ -128,7 +138,7 @@ function createRemoveItemSpan(currentItemContainer:HTMLLIElement):void {
     span.appendChild(removeIcon);
 
     // add the span to the end of the to-do item container
-    currentItemContainer.appendChild(span);
+    currentContainer.appendChild(span);
 
     // setup onclick event for span
     span.onclick = removeItem;
@@ -193,9 +203,9 @@ function toggleCompletionStatus():void {
 }
 
 /**
- * Clears out all previous errors when called
+ * Clears out all errors displayed on the form when called
  */
- function clearPreviousErrors():void {
+ function clearErrors():void {
     let errorSummary = getByID("error-list");
     errorSummary.innerText = "";
 }
@@ -267,6 +277,45 @@ function clearTextBoxes():void {
     // if date is formatted correctly
     return true;
 }
+
+const toDoKey:string = "todo";
+
+function saveItem(item:ToDoItem) {
+    // convert ToDoItem to JSON string
+    let itemString:string = JSON.stringify(item);
+
+    // save it in local storage
+    localStorage.setItem(toDoKey, itemString);
+}
+
+/**
+ * Gets a stored ToDo item from local storage and returns it.
+ * 
+ * If no item is found, returns null
+ * @returns A stored ToDo Item if present, null if not
+ */
+function getItem():ToDoItem {
+    // get item string from local storage
+    let itemString:string = localStorage.getItem(toDoKey);
+
+    // convert it into a ToDoItem
+    let item:ToDoItem = JSON.parse(itemString);
+
+    // return the item
+    return item;
+}
+
+/**
+ * Loads all items saved in local storage when called
+ */
+ function loadSavedItems():void {
+    // get item from local storage
+    let currentItem:ToDoItem = getItem();
+
+    // display it at the bottom of the page
+    displayItem(currentItem);
+}
+
 
 /**
  * Sets up an onclick event for a button

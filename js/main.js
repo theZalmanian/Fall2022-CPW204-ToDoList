@@ -1,18 +1,20 @@
 var ToDoItem = (function () {
     function ToDoItem(itemTitle, itemDueDate) {
-        this.itemTitle = itemTitle;
-        this.itemDueDate = itemDueDate;
+        this.title = itemTitle;
+        this.dueDate = itemDueDate;
     }
     return ToDoItem;
 }());
 window.onload = function () {
-    setupButton("add-item", addToDoItem);
+    setupButton("add-item", addItem);
+    loadSavedItems();
 };
-function addToDoItem() {
-    clearPreviousErrors();
+function addItem() {
+    clearErrors();
     if (allDataValid()) {
-        var currentItem = getToDoItem();
-        displayToDoItem(currentItem);
+        var currentItem = createItem();
+        displayItem(currentItem);
+        saveItem(currentItem);
         clearTextBoxes();
     }
 }
@@ -27,29 +29,30 @@ function allDataValid() {
     }
     return allDataValid;
 }
-function getToDoItem() {
+function createItem() {
     var itemTitle = getInputByID("title").value;
     var dueDateTextBox = getInputByID("due-date");
     var itemDueDate = new Date(dueDateTextBox.value);
     var currentItem = new ToDoItem(itemTitle, itemDueDate);
     return currentItem;
 }
-function displayToDoItem(currentItem) {
+function displayItem(currentItem) {
     var itemContainer = document.createElement("li");
-    var itemTitle = currentItem.itemTitle;
-    var itemDueDate = currentItem.itemDueDate.toLocaleDateString();
-    itemContainer.innerText = itemTitle + " by " + itemDueDate;
+    var itemTitle = currentItem.title;
+    var itemDueDate = new Date(currentItem.dueDate.toString());
+    var itemDueDateString = itemDueDate.toLocaleDateString();
+    itemContainer.innerText = itemTitle + " by " + itemDueDateString;
     itemContainer.onclick = toggleCompletionStatus;
     var displayItemsList = getByID("item-list");
     displayItemsList.appendChild(itemContainer);
     createRemoveItemSpan(itemContainer);
 }
-function createRemoveItemSpan(currentItemContainer) {
+function createRemoveItemSpan(currentContainer) {
     var span = document.createElement("span");
     span.classList.add("remove-item");
     var removeIcon = document.createTextNode("\u00D7");
     span.appendChild(removeIcon);
-    currentItemContainer.appendChild(span);
+    currentContainer.appendChild(span);
     span.onclick = removeItem;
 }
 function removeItem() {
@@ -74,7 +77,7 @@ function displayError(errorMessage) {
     var displayErrorsList = getByID("error-list");
     displayErrorsList.appendChild(newError);
 }
-function clearPreviousErrors() {
+function clearErrors() {
     var errorSummary = getByID("error-list");
     errorSummary.innerText = "";
 }
@@ -105,6 +108,20 @@ function isValidDate(id) {
         return false;
     }
     return true;
+}
+var toDoKey = "todo";
+function saveItem(item) {
+    var itemString = JSON.stringify(item);
+    localStorage.setItem(toDoKey, itemString);
+}
+function getItem() {
+    var itemString = localStorage.getItem(toDoKey);
+    var item = JSON.parse(itemString);
+    return item;
+}
+function loadSavedItems() {
+    var currentItem = getItem();
+    displayItem(currentItem);
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);
