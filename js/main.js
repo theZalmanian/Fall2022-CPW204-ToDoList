@@ -111,17 +111,24 @@ function isValidDate(id) {
 }
 var toDoKey = "todo";
 function saveItem(item) {
-    var itemString = JSON.stringify(item);
-    localStorage.setItem(toDoKey, itemString);
+    var currentItems = getItems();
+    if (currentItems == null) {
+        currentItems = new Array();
+    }
+    currentItems.push(item);
+    var currentItemsString = JSON.stringify(currentItems);
+    localStorage.setItem(toDoKey, currentItemsString);
 }
-function getItem() {
+function getItems() {
     var itemString = localStorage.getItem(toDoKey);
-    var item = JSON.parse(itemString);
-    return item;
+    var items = JSON.parse(itemString);
+    return items;
 }
 function loadSavedItems() {
-    var currentItem = getItem();
-    displayItem(currentItem);
+    var savedItems = getItems();
+    for (var currentItem = 0; currentItem < savedItems.length; currentItem++) {
+        displayItem(savedItems[currentItem]);
+    }
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);

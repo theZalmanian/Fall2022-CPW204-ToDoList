@@ -280,40 +280,60 @@ function clearTextBoxes():void {
 
 const toDoKey:string = "todo";
 
+/**
+ * Stores a to-do item in local storage
+ * @param item The item to be saved
+ */
 function saveItem(item:ToDoItem) {
-    // convert ToDoItem to JSON string
-    let itemString:string = JSON.stringify(item);
+    // get array of all currently stored items
+    let currentItems:ToDoItem[] = getItems();
 
-    // save it in local storage
-    localStorage.setItem(toDoKey, itemString);
+    // if no items are found in the array 
+    if(currentItems == null) {
+        // reset array to be empty
+        currentItems = new Array();
+    }
+
+    // add current item to the array
+    currentItems.push(item);
+
+    // convert all ToDoItems to JSON string
+    let currentItemsString:string = JSON.stringify(currentItems);
+
+    // save them in local storage
+    localStorage.setItem(toDoKey, currentItemsString);
 }
 
 /**
- * Gets a stored ToDo item from local storage and returns it.
+ * Gets all stored ToDo items from local storage 
+ * and returns an array of them.
  * 
- * If no item is found, returns null
- * @returns A stored ToDo Item if present, null if not
+ * If no items are found, returns null
+ * @returns An array of stored ToDo Items if present, null if not
  */
-function getItem():ToDoItem {
+function getItems():ToDoItem[] {
     // get item string from local storage
     let itemString:string = localStorage.getItem(toDoKey);
 
-    // convert it into a ToDoItem
-    let item:ToDoItem = JSON.parse(itemString);
+    // convert it into a ToDoItem and place in array
+    let items:ToDoItem[] = JSON.parse(itemString);
 
-    // return the item
-    return item;
+    // return the items 
+    return items;
 }
 
 /**
  * Loads all items saved in local storage when called
  */
  function loadSavedItems():void {
-    // get item from local storage
-    let currentItem:ToDoItem = getItem();
+    // get all items from local storage
+    let savedItems:ToDoItem[] = getItems();
 
-    // display it at the bottom of the page
-    displayItem(currentItem);
+    // run through array
+    for(let currentItem:number = 0; currentItem < savedItems.length; currentItem++) {
+        // display each item at the bottom of the page
+        displayItem(savedItems[currentItem]);
+    }
 }
 
 
