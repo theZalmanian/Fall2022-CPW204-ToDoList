@@ -4,7 +4,7 @@
     --colorSecondary:  #a89ef4;
     --colorBackground: #002b36;
     --colorAccent1:    #c7c4e2;
-    --colorAccent2:    #72705B;
+    --colorAccent2:    #72705b;
 }
 
 body {
@@ -16,12 +16,12 @@ body, input[type="button"] {
     font-family: 'Noto Sans Warang Citi', Arial, Helvetica, sans-serif; 
 }
 
-h1, .textbox, #item-list > li {
+h1, .textbox, .item-container {
     text-align: center;
 }
 
-#display-errors, #add-item-form, input[type="button"], 
-#display-items, #item-list > li, .remove-item {
+#display-errors, #add-item-form, .textbox, input[type="button"], 
+#display-items, .item-container, .remove-item {
     margin: auto;
     border-radius: .5em;
 }
@@ -74,9 +74,12 @@ input[type="button"] {
     border: 2px solid var(--colorSecondary);
 }
 
-input[type="button"]:hover, .remove-item:hover, #item-list > li:hover {
-    cursor: pointer;
+input[type="button"]:hover, .remove-item:hover, .item-container:hover {
     transition: all .3s;
+}
+
+input[type="button"]:hover, .remove-item:hover, .item-container > div:hover {
+    cursor: pointer;
 }
 
 input[type="button"]:hover {
@@ -94,8 +97,7 @@ input[type="button"]:hover {
     padding: 0;
 }
 
-#item-list > li {
-    box-sizing: border-box;
+.item-container {
     position: relative;
     padding: 1em 1.5em;
     margin-top: .5em;
@@ -104,7 +106,7 @@ input[type="button"]:hover {
     color: var(--colorBackground);
 }
 
-#item-list > li:hover {
+.item-container:hover {
     opacity: .8;
 }
 
