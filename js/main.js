@@ -34,10 +34,32 @@ function displayItem(currItem) {
     var itemDueDate = new Date(currItem.dueDate.toString());
     var itemDueDateString = itemDueDate.toLocaleDateString();
     itemContainer.innerText = itemTitle + " by " + itemDueDateString;
-    itemContainer.onclick = toggleCompletionStatus;
+    itemContainer.onclick = function () {
+        toggleCompletionStatus(itemContainer, currItem);
+    };
+    if (currItem.isComplete) {
+        markAsCompleted(itemContainer, currItem);
+    }
     var displayItemsList = getByID("item-list");
     displayItemsList.appendChild(itemContainer);
     createRemoveItemSpan(itemContainer, currItem);
+}
+function toggleCompletionStatus(currContainer, currItem) {
+    if (currItem.isComplete) {
+        markAsUncompleted(currContainer, currItem);
+    }
+    else if (!currItem.isComplete) {
+        markAsCompleted(currContainer, currItem);
+    }
+    saveItem(currItem);
+}
+function markAsCompleted(currContainer, currItem) {
+    currItem.isComplete = true;
+    currContainer.classList.add("completed");
+}
+function markAsUncompleted(currContainer, currItem) {
+    currItem.isComplete = false;
+    currContainer.classList.remove("completed");
 }
 function createRemoveItemSpan(currContainer, currItem) {
     var span = document.createElement("span");
@@ -60,21 +82,21 @@ function removeItemFromStorage(currItem) {
     }
     pushToStorage(savedItems);
 }
-function toggleCompletionStatus() {
-    var currentItem = this;
-    if (currentItem.className == "completed") {
-        currentItem.classList.remove("completed");
-    }
-    else {
-        currentItem.classList.add("completed");
-    }
-}
 function saveItem(currItem) {
     var savedItems = getAllSavedItems();
     if (savedItems == null) {
         savedItems = new Array();
     }
-    savedItems.push(currItem);
+    var itemReplaced = false;
+    for (var currIndex = 0; currIndex < savedItems.length; currIndex++) {
+        if (currItem.id == savedItems[currIndex].id) {
+            savedItems.splice(currIndex, 1, currItem);
+            itemReplaced = true;
+        }
+    }
+    if (!itemReplaced) {
+        savedItems.push(currItem);
+    }
     pushToStorage(savedItems);
 }
 function getAllSavedItems() {

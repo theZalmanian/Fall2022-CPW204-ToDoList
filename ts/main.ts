@@ -101,9 +101,17 @@ function displayItem(currItem:ToDoItem):void {
     // place to-do item's info in container
     itemContainer.innerText = itemTitle + " by " + itemDueDateString;
 
-    // setup onclick event for li so that when clicked
-    // it will toggle as completed/uncompleted
-    itemContainer.onclick = toggleCompletionStatus;
+    // setup onclick event for li 
+    itemContainer.onclick = function():void {
+        // when clicked it will toggle as completed/uncompleted
+        toggleCompletionStatus(itemContainer, currItem);
+    };
+
+    // if the current item is being added from local storage
+    // and already marked as completed, display it as such
+    if(currItem.isComplete) {
+        markAsCompleted(itemContainer, currItem);
+    }
 
     // grab the ul where to-do items are displayed
     let displayItemsList:HTMLElement = getByID("item-list");
@@ -114,6 +122,58 @@ function displayItem(currItem:ToDoItem):void {
     // create a remove-item span that when clicked will remove
     // the to-do item, and set it at the end of the item container
     createRemoveItemSpan(itemContainer, currItem);
+}
+
+/**
+ * When a to-do item container is clicked-
+ * 
+ * If it is uncompleted, marks it as completed
+ * 
+ * If it is completed, marks it as uncompleted
+ * @param currContainer The container that was clicked
+ * @param currItem The ToDo Item being marked as complete/incomplete
+ */
+ function toggleCompletionStatus(currContainer:HTMLLIElement, currItem:ToDoItem):void {
+    // if the to-do item is already marked as completed
+    if(currItem.isComplete) {
+        // mark as uncompleted
+        markAsUncompleted(currContainer, currItem);
+    }
+    
+    // if marked as uncompleted
+    else if(!currItem.isComplete) {
+        // mark as completed
+        markAsCompleted(currContainer, currItem);
+    }
+
+    // save the item in local storage
+    saveItem(currItem);
+}
+
+/**
+ * Marks a to-do item as completed
+ * @param currContainer The container that was clicked
+ * @param currItem The ToDo Item being marked as complete
+ */
+function markAsCompleted(currContainer:HTMLLIElement, currItem:ToDoItem):void {
+    // set the to-do item as completed
+    currItem.isComplete = true;
+
+    // give the container the completed class
+    currContainer.classList.add("completed");
+}
+
+/**
+ * Marks a to-do item as uncompleted
+ * @param currContainer The container that was clicked
+ * @param currItem The ToDo Item being marked as uncompleted
+ */
+function markAsUncompleted(currContainer:HTMLLIElement, currItem:ToDoItem):void {
+    // set the to-do item as 
+    currItem.isComplete = false;
+
+    // remove the completed class from the container
+    currContainer.classList.remove("completed");
 }
 
 /**
@@ -176,27 +236,6 @@ function removeItemFromStorage(currItem:ToDoItem):void {
     pushToStorage(savedItems);
 }
 
-
-/**
- * When a to-do item is clicked, marks it as completed.
- * If it was already completed, marks as uncompleted
- */
-function toggleCompletionStatus():void {
-    // get item that was clicked
-    let currentItem:HTMLElement = <HTMLElement> this;
-
-    // if already marked as completed, mark as uncompleted
-    if(currentItem.className == "completed") {
-        currentItem.classList.remove("completed");
-    }
-
-    // if marked as uncompleted, mark it as completed
-    else {
-        // give it the completed class
-        currentItem.classList.add("completed");
-    }
-}
-
 /****************
 **** STORAGE ****
 ****************/
@@ -215,8 +254,26 @@ function saveItem(currItem:ToDoItem):void {
         savedItems = new Array();
     }
 
-    // add current item to end of the array
-    savedItems.push(currItem);
+    // run through all saved items to check if the current item
+    // is already saved in local storage
+    let itemReplaced = false;
+    for(let currIndex:number = 0; currIndex < savedItems.length; currIndex++) {
+        // if the item is already saved in local storage
+        if(currItem.id == savedItems[currIndex].id) {
+            // replace the version in local storage with the 
+            // current item (newest version)
+            savedItems.splice(currIndex, 1, currItem);
+
+            // indicate that an item was replaced
+            itemReplaced = true;
+        }
+    }
+
+    // as long as an item was not replaced by it's copy
+    if(!itemReplaced) {
+        // add current item to end of the array
+        savedItems.push(currItem);
+    }
 
     // send all items back into local storage
     pushToStorage(savedItems);
@@ -245,8 +302,8 @@ function getAllSavedItems():ToDoItem[] {
  * and displays them at the bottom of the page
  */
  function displayAllSavedItems():void {
-    // reset the id's of all items currently stored 
-    // in local storage
+    // reset the id's of all items currently 
+    // stored in local storage
     resetAllItemID();
 
     // get all items currently stored in local storage
