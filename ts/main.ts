@@ -86,8 +86,14 @@ function addItem():void {
  * @param currItem The ToDo Item being displayed
  */
 function displayItem(currItem:ToDoItem):void {
-    // create new li to hold item info
+    // create a new li to hold item info and the removal span
     let itemContainer:HTMLLIElement = document.createElement("li");
+    
+    // give it the item-container class
+    itemContainer.classList.add("item-container");
+
+    // create new div to hold item info
+    let itemInfoContainer:HTMLDivElement = document.createElement("div");
     
     // get to-do item's title
     let itemTitle:string = currItem.title;
@@ -99,10 +105,13 @@ function displayItem(currItem:ToDoItem):void {
     let itemDueDateString:string = itemDueDate.toLocaleDateString();
 
     // place to-do item's info in container
-    itemContainer.innerText = itemTitle + " by " + itemDueDateString;
+    itemInfoContainer.innerText = itemTitle + " by " + itemDueDateString;
 
-    // setup onclick event for li 
-    itemContainer.onclick = function():void {
+    // place the info container in the item container
+    itemContainer.appendChild(itemInfoContainer);
+
+    // setup onclick event for info container
+    itemInfoContainer.onclick = function():void {
         // when clicked it will toggle as completed/uncompleted
         toggleCompletionStatus(itemContainer, currItem);
     };
@@ -125,7 +134,7 @@ function displayItem(currItem:ToDoItem):void {
 }
 
 /**
- * When a to-do item container is clicked-
+ * When a to-do item's info container is clicked-
  * 
  * If it is uncompleted, marks it as completed
  * 
@@ -194,7 +203,7 @@ function createRemoveItemSpan(currContainer:HTMLLIElement, currItem:ToDoItem):vo
     // create a unicode multiplication sign
     let removeIcon:Text = document.createTextNode("\u00D7");
 
-    // place it in the span to represent 'remove icon' 
+    // place it in the span to represent a 'remove icon' 
     span.appendChild(removeIcon);
 
     // add the span to the end of the to-do item container
@@ -239,6 +248,11 @@ function removeItemFromStorage(currItem:ToDoItem):void {
 /****************
 **** STORAGE ****
 ****************/
+
+/**
+ * The key that holds all to-do item's in local storage
+ */
+ const toDoKey:string = "todo-items";
 
 /**
  * Stores the passed through to-do item in local storage
@@ -495,11 +509,6 @@ function resetAllItemID():void {
 /****************
 **** HELPERS ****
 ****************/
-
-/**
- * The key that holds all to-do item's in local storage
- */
-const toDoKey:string = "todo-items";
 
 /**
  * Takes an array of to-do item's and places it in local storage

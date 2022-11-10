@@ -30,11 +30,14 @@ function createItem() {
 }
 function displayItem(currItem) {
     var itemContainer = document.createElement("li");
+    itemContainer.classList.add("item-container");
+    var itemInfoContainer = document.createElement("div");
     var itemTitle = currItem.title;
     var itemDueDate = new Date(currItem.dueDate.toString());
     var itemDueDateString = itemDueDate.toLocaleDateString();
-    itemContainer.innerText = itemTitle + " by " + itemDueDateString;
-    itemContainer.onclick = function () {
+    itemInfoContainer.innerText = itemTitle + " by " + itemDueDateString;
+    itemContainer.appendChild(itemInfoContainer);
+    itemInfoContainer.onclick = function () {
         toggleCompletionStatus(itemContainer, currItem);
     };
     if (currItem.isComplete) {
@@ -82,6 +85,7 @@ function removeItemFromStorage(currItem) {
     }
     pushToStorage(savedItems);
 }
+var toDoKey = "todo-items";
 function saveItem(currItem) {
     var savedItems = getAllSavedItems();
     if (savedItems == null) {
@@ -174,7 +178,6 @@ function resetAllItemID() {
     }
     pushToStorage(savedItems);
 }
-var toDoKey = "todo-items";
 function pushToStorage(savedItems) {
     var itemsString = JSON.stringify(savedItems);
     localStorage.setItem(toDoKey, itemsString);
