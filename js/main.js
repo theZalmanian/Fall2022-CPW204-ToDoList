@@ -1,7 +1,9 @@
 var ToDoItem = (function () {
-    function ToDoItem(itemTitle, itemDueDate) {
+    function ToDoItem(itemID, itemTitle, itemDueDate, isItemComplete) {
+        this.id = itemID;
         this.title = itemTitle;
         this.dueDate = itemDueDate;
+        this.isComplete = isItemComplete;
     }
     return ToDoItem;
 }());
@@ -18,22 +20,12 @@ function addItem() {
         clearTextBoxes();
     }
 }
-function allDataValid() {
-    var allDataValid = true;
-    if (isInputEmpty("title")) {
-        displayError("You must enter an item title!");
-        allDataValid = false;
-    }
-    if (!isValidDate("due-date")) {
-        allDataValid = false;
-    }
-    return allDataValid;
-}
 function createItem() {
+    var itemID = incrementID();
     var itemTitle = getInputByID("title").value;
     var dueDateTextBox = getInputByID("due-date");
     var itemDueDate = new Date(dueDateTextBox.value);
-    var currentItem = new ToDoItem(itemTitle, itemDueDate);
+    var currentItem = new ToDoItem(itemID, itemTitle, itemDueDate, false);
     return currentItem;
 }
 function displayItem(currentItem) {
@@ -45,21 +37,30 @@ function displayItem(currentItem) {
     itemContainer.onclick = toggleCompletionStatus;
     var displayItemsList = getByID("item-list");
     displayItemsList.appendChild(itemContainer);
-    createRemoveItemSpan(itemContainer);
+    createRemoveItemSpan(itemContainer, currentItem);
 }
-function createRemoveItemSpan(currentContainer) {
+function createRemoveItemSpan(currentContainer, currentItem) {
     var span = document.createElement("span");
     span.classList.add("remove-item");
     var removeIcon = document.createTextNode("\u00D7");
     span.appendChild(removeIcon);
     currentContainer.appendChild(span);
-    span.onclick = removeItem;
+    span.onclick = function () {
+        removeItem(currentItem);
+        var itemContainer = span.parentElement;
+        var displayItemsList = getByID("item-list");
+        displayItemsList.removeChild(itemContainer);
+    };
 }
-function removeItem() {
-    var currentSpan = this;
-    var itemContainer = currentSpan.parentElement;
-    var displayItemsList = getByID("item-list");
-    displayItemsList.removeChild(itemContainer);
+function removeItem(currentItem) {
+    var savedItems = getItems();
+    for (var currIndex = 0; currIndex < savedItems.length; currIndex++) {
+        if (currentItem.id == savedItems[currIndex].id) {
+            savedItems.splice(currIndex, 1);
+        }
+    }
+    var currentItemsString = JSON.stringify(savedItems);
+    localStorage.setItem(toDoKey, currentItemsString);
 }
 function toggleCompletionStatus() {
     var currentItem = this;
@@ -70,23 +71,40 @@ function toggleCompletionStatus() {
         currentItem.classList.add("completed");
     }
 }
-function displayError(errorMessage) {
-    var newError = document.createElement("li");
-    newError.classList.add("error");
-    newError.innerText = errorMessage;
-    var displayErrorsList = getByID("error-list");
-    displayErrorsList.appendChild(newError);
-}
-function clearErrors() {
-    var errorSummary = getByID("error-list");
-    errorSummary.innerText = "";
-}
-function clearTextBoxes() {
-    var allTextBoxes = document.querySelectorAll(".textbox");
-    for (var i = 0; i < allTextBoxes.length; i++) {
-        var currentTextBox = allTextBoxes[i];
-        currentTextBox.value = "";
+var toDoKey = "todo";
+function saveItem(item) {
+    var currentItems = getItems();
+    if (currentItems == null) {
+        currentItems = new Array();
     }
+    currentItems.push(item);
+    var currentItemsString = JSON.stringify(currentItems);
+    localStorage.setItem(toDoKey, currentItemsString);
+}
+function getItems() {
+    var itemString = localStorage.getItem(toDoKey);
+    var items = JSON.parse(itemString);
+    return items;
+}
+function loadSavedItems() {
+    resetID();
+    var savedItems = getItems();
+    if (savedItems.length > 0) {
+        for (var currentIndex = 0; currentIndex < savedItems.length; currentIndex++) {
+            displayItem(savedItems[currentIndex]);
+        }
+    }
+}
+function allDataValid() {
+    var allDataValid = true;
+    if (isInputEmpty("title")) {
+        displayError("You must enter an item title!");
+        allDataValid = false;
+    }
+    if (!isValidDate("due-date")) {
+        allDataValid = false;
+    }
+    return allDataValid;
 }
 function isInputEmpty(id) {
     var userInput = getInputByID(id).value;
@@ -109,26 +127,37 @@ function isValidDate(id) {
     }
     return true;
 }
-var toDoKey = "todo";
-function saveItem(item) {
-    var currentItems = getItems();
-    if (currentItems == null) {
-        currentItems = new Array();
+function displayError(errorMessage) {
+    var newError = document.createElement("li");
+    newError.classList.add("error");
+    newError.innerText = errorMessage;
+    var displayErrorsList = getByID("error-list");
+    displayErrorsList.appendChild(newError);
+}
+function clearErrors() {
+    var errorSummary = getByID("error-list");
+    errorSummary.innerText = "";
+}
+function clearTextBoxes() {
+    var allTextBoxes = document.querySelectorAll(".textbox");
+    for (var i = 0; i < allTextBoxes.length; i++) {
+        var currentTextBox = allTextBoxes[i];
+        currentTextBox.value = "";
     }
-    currentItems.push(item);
-    var currentItemsString = JSON.stringify(currentItems);
-    localStorage.setItem(toDoKey, currentItemsString);
 }
-function getItems() {
-    var itemString = localStorage.getItem(toDoKey);
-    var items = JSON.parse(itemString);
-    return items;
+var idCount = 1;
+function incrementID() {
+    return idCount++;
 }
-function loadSavedItems() {
+function resetID() {
+    idCount = 1;
     var savedItems = getItems();
-    for (var currentItem = 0; currentItem < savedItems.length; currentItem++) {
-        displayItem(savedItems[currentItem]);
+    for (var currIndex = 0; currIndex < savedItems.length; currIndex++) {
+        var currentItem = savedItems[currIndex];
+        currentItem.id = incrementID();
     }
+    var currentItemsString = JSON.stringify(savedItems);
+    localStorage.setItem(toDoKey, currentItemsString);
 }
 function setupButton(id, useFunction) {
     var button = getByID(id);
