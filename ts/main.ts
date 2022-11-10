@@ -4,6 +4,13 @@ class ToDoItem {
     dueDate:Date;
     isComplete:boolean;
 
+    /**
+     * Standard constructor of a to-do item object
+     * @param itemID The item's id in relation to other items
+     * @param itemTitle The task to be done
+     * @param itemDueDate The date by which the task needs to be completed
+     * @param isItemComplete Whether the item has been completed or not
+     */
     constructor(itemID:number, itemTitle:string, itemDueDate:Date, isItemComplete:boolean) {
         this.id = itemID;
         this.title = itemTitle;
@@ -17,7 +24,7 @@ window.onload = function():void {
     setupButton("add-item", addItem);
 
     // load saved items, if any
-    loadSavedItems();
+    displayAllSavedItems();
 }
 
 /*******************
@@ -25,66 +32,68 @@ window.onload = function():void {
 *******************/
 
 /** 
- * This function is called when the add item button is clicked.
- * Creates and displays the to-do item at the bottom of the form,
- * if all form input is valid
+ * This function is called when the add item button is clicked
+ * 
+ * If all form input is valid, creates the to-do item, displays it 
+ * at the bottom of the page, and saves it to local storage
 */
 function addItem():void {
     // clear out previous errors, if any
-    clearErrors();
+    clearAllErrors();
 
-    // check if all data is valid
+    // if all form data is valid
     if(allDataValid()) {
         // create new to-do item
-        let currentItem:ToDoItem = createItem();
+        let newItem:ToDoItem = createItem();
 
-        // display to-do item
-        displayItem(currentItem);
+        // display at bottom of page
+        displayItem(newItem);
 
         // save item in local storage
-        saveItem(currentItem);
+        saveItem(newItem);
         
-        // clear out inputs
-        clearTextBoxes();
+        // clear out all inputs
+        clearAllTextBoxes();
     }
 }
 
 /**
  * Creates a new ToDoItem object and populates it with
- * data from the form
+ * the user's input
  * @returns The new ToDoItem object
  */
  function createItem():ToDoItem {
-    // set and id for the item 
-    let itemID:number = incrementID();
+    // set an id for the item based on 
+    // previously existing # of items
+    let itemID:number = incrementIDCount();
 
-    // get title
+    // get item title
     let itemTitle:string = getInputByID("title").value;
 
-    // get due date
+    // get item due date
     let dueDateTextBox:HTMLInputElement = getInputByID("due-date");
     let itemDueDate:Date = new Date(dueDateTextBox.value);
     
     // create new instance of ToDoItem
-    let currentItem:ToDoItem = new ToDoItem(itemID, itemTitle, itemDueDate, false);
+    let newItem:ToDoItem = new ToDoItem(itemID, itemTitle, itemDueDate, false);
 
-    // returns new instance of ToDoItem
-    return currentItem;
+    // return new instance of ToDoItem
+    return newItem;
 }
 
 /**
- * Displays a given item at the bottom of the page
- * @param currentItem The current ToDo Item
+ * Displays a given to-do item at the bottom of the page
+ * @param currItem The ToDo Item being displayed
  */
-function displayItem(currentItem:ToDoItem):void {
+function displayItem(currItem:ToDoItem):void {
     // create new li to hold item info
     let itemContainer:HTMLLIElement = document.createElement("li");
     
     // get to-do item's title
-    let itemTitle:string = currentItem.title;
+    let itemTitle:string = currItem.title;
 
     // get to-do item's due date as a date
-    let itemDueDate:Date = new Date(currentItem.dueDate.toString());
+    let itemDueDate:Date = new Date(currItem.dueDate.toString());
 
     // format the date as mm/dd/yyyy
     let itemDueDateString:string = itemDueDate.toLocaleDateString();
@@ -92,7 +101,8 @@ function displayItem(currentItem:ToDoItem):void {
     // place to-do item's info in container
     itemContainer.innerText = itemTitle + " by " + itemDueDateString;
 
-    // setup onclick event for li 
+    // setup onclick event for li so that when clicked
+    // it will toggle as completed/uncompleted
     itemContainer.onclick = toggleCompletionStatus;
 
     // grab the ul where to-do items are displayed
@@ -101,16 +111,20 @@ function displayItem(currentItem:ToDoItem):void {
     // place the new li within it
     displayItemsList.appendChild(itemContainer);
 
-    // create remove-item span and attach to end of new li
-    createRemoveItemSpan(itemContainer, currentItem);
+    // create a remove-item span that when clicked will remove
+    // the to-do item, and set it at the end of the item container
+    createRemoveItemSpan(itemContainer, currItem);
 }
 
 /**
- * Creates a span to act as a 'remove item' button,
- * and adds it to the end of the current item's container
- * @param currentContainer The container for the current ToDo Item
+ * Creates a span and adds it to the end of the current item's container
+ * 
+ * When the span is clicked, the current item will be removed from both
+ * the page, and local storage
+ * @param currContainer The container to which the span will be added
+ * @param currItem The item being removed when the span is clicked
  */
-function createRemoveItemSpan(currentContainer:HTMLLIElement, currentItem:ToDoItem):void {
+function createRemoveItemSpan(currContainer:HTMLLIElement, currItem:ToDoItem):void {
     // create a span
     let span:HTMLSpanElement = document.createElement("span");
 
@@ -120,57 +134,48 @@ function createRemoveItemSpan(currentContainer:HTMLLIElement, currentItem:ToDoIt
     // create a unicode multiplication sign
     let removeIcon:Text = document.createTextNode("\u00D7");
 
-    // place it in the span to represent 'remove button' 
+    // place it in the span to represent 'remove icon' 
     span.appendChild(removeIcon);
 
     // add the span to the end of the to-do item container
-    currentContainer.appendChild(span);
+    currContainer.appendChild(span);
 
-    // setup onclick event for span
-    span.onclick = function() {
-        // remove the current item
-        removeItem(currentItem);
-
-        // get the li that the span belongs to
-        let itemContainer:HTMLElement = span.parentElement;
+    // setup onclick event for span, so that when clicked
+    // current item will be removed
+    span.onclick = function removeItemFromPage():void {
+        // remove the current item from local storage
+        removeItemFromStorage(currItem);
 
         // grab the ul where to-do items are displayed
         let displayItemsList:HTMLElement = getByID("item-list");
 
-        // remove the to-do item from the list
-        displayItemsList.removeChild(itemContainer);
+        // remove the current item from the page
+        displayItemsList.removeChild(currContainer);
     };
 }
 
 /**
  * When a 'remove-item' span is clicked, removes
- * the corresponding to-do item from the items list
- */
-
-/**
- * When a 'remove-item' span is clicked, removes
  * the corresponding to-do item from local storages
- * @param currentItem The current ToDo Item
+ * @param currItem The item being removed from local storage
  */
-function removeItem(currentItem:ToDoItem) {
-    // get saved items
-    let savedItems:ToDoItem[] = getItems();
+function removeItemFromStorage(currItem:ToDoItem):void {
+    // get all items currently stored in local storage
+    let savedItems:ToDoItem[] = getAllSavedItems();
 
-    // run through array
+    // run through all saved items
     for(let currIndex:number = 0; currIndex < savedItems.length; currIndex++) {
-        // if the current saved item's id matches the removed item's id,
-        if(currentItem.id == savedItems[currIndex].id) {
-            // remove the item
+        // find the index where the current item is held
+        if(currItem.id == savedItems[currIndex].id) {
+            // remove the item from the array
             savedItems.splice(currIndex, 1);
         }
     }
 
-    // convert all ToDoItems to JSON string
-    let currentItemsString:string = JSON.stringify(savedItems);
-
-    // save them in local storage
-    localStorage.setItem(toDoKey, currentItemsString);
+    // send all remaining items back into local storage
+    pushToStorage(savedItems);
 }
+
 
 /**
  * When a to-do item is clicked, marks it as completed.
@@ -196,67 +201,61 @@ function toggleCompletionStatus():void {
 **** STORAGE ****
 ****************/
 
-const toDoKey:string = "todo";
-
 /**
- * Stores a to-do item in local storage
- * @param item The item to be saved
+ * Stores the passed through to-do item in local storage
+ * @param currItem The item being saved in local storage
  */
-function saveItem(item:ToDoItem) {
-    // get array of all currently stored items
-    let currentItems:ToDoItem[] = getItems();
+function saveItem(currItem:ToDoItem):void {
+    // get all items currently stored in local storage
+    let savedItems:ToDoItem[] = getAllSavedItems();
 
     // if no items are found in the array 
-    if(currentItems == null) {
+    if(savedItems == null) {
         // reset array to be empty
-        currentItems = new Array();
+        savedItems = new Array();
     }
 
-    // add current item to the array
-    currentItems.push(item);
+    // add current item to end of the array
+    savedItems.push(currItem);
 
-    // convert all ToDoItems to JSON string
-    let currentItemsString:string = JSON.stringify(currentItems);
-
-    // save them in local storage
-    localStorage.setItem(toDoKey, currentItemsString);
+    // send all items back into local storage
+    pushToStorage(savedItems);
 }
 
 /**
- * Gets all stored ToDo items from local storage 
- * and returns an array of them.
+ * Gets all items currently stored in local storage,
+ * and returns them in an array
  * 
  * If no items are found, returns null
  * @returns An array of stored ToDo Items if present, null if not
  */
-function getItems():ToDoItem[] {
+function getAllSavedItems():ToDoItem[] {
     // get item string from local storage
-    let itemString:string = localStorage.getItem(toDoKey);
+    let itemsString:string = localStorage.getItem(toDoKey);
 
     // convert it into a ToDoItem and place in array
-    let items:ToDoItem[] = JSON.parse(itemString);
+    let savedItems:ToDoItem[] = JSON.parse(itemsString);
 
-    // return the items 
-    return items;
+    // return the array
+    return savedItems;
 }
 
 /**
- * Loads all items saved in local storage when called
+ * When called gets all to-do items stored in local storage,
+ * and displays them at the bottom of the page
  */
- function loadSavedItems():void {
-    // reset the id's
-    resetID();
+ function displayAllSavedItems():void {
+    // reset the id's of all items currently stored 
+    // in local storage
+    resetAllItemID();
 
-    // get all items from local storage
-    let savedItems:ToDoItem[] = getItems();
+    // get all items currently stored in local storage
+    let savedItems:ToDoItem[] = getAllSavedItems();
 
-    // as long as array is not empty
-    if(savedItems.length > 0) {
-        // run through array
-        for(let currentIndex:number = 0; currentIndex < savedItems.length; currentIndex++) {
-            // display item at the bottom of the page
-            displayItem(savedItems[currentIndex]);
-        }
+    // run through all saved items
+    for(let currIndex:number = 0; currIndex < savedItems.length; currIndex++) {
+        // display the current item at the bottom of the page
+        displayItem(savedItems[currIndex]);
     }
 }
 
@@ -269,7 +268,7 @@ function getItems():ToDoItem[] {
  * 
  * If all data is valid, returns true, if not returns false and displays
  * the appropriate error message(s)
- * @returns True if all data is valid, False if not
+ * @returns True if all data is valid; otherwise False
  */
  function allDataValid():boolean {
     // setup flag
@@ -290,15 +289,15 @@ function getItems():ToDoItem[] {
  }
 
 /**
- * Checks if input is empty, or made up of whitespace
- * @param id The input's id.
- * @returns True if input is empty, False if not
+ * Checks if input is empty, and returns true or false correspondingly
+ * @param id The id of the input being checked
+ * @returns True if input is empty; otherwise False
  */
  function isInputEmpty(id:string):boolean {
     // get value from textbox
     let userInput:string = getInputByID(id).value;
     
-    // check if user input is empty
+    // check if input is empty
     if(userInput.trim() == "") {
         return true;
     }
@@ -308,22 +307,23 @@ function getItems():ToDoItem[] {
 }
 
 /**
- * Checks if the date entered is formatted correctly. 
+ * Checks if the date entered is formatted correctly
+ * 
  * If date is not valid, displays the appropriate error message(s)
- * @param id The input's id
- * @returns True if date is valid, False if not.
+ * @param id The id of the input being checked
+ * @returns True if date is valid; otherwise false
  */
  function isValidDate(id:string):boolean {
     // get value from textbox
     let userInput:string = getInputByID(id).value;
 
-    // check if empty string
+    // check if input is empty
     if(isInputEmpty(id)) {
         displayError("You must select a due date!");
         return false;
     } 
     
-    // setup regular expression for validation
+    // setup regular expression for date validation
     // mm/dd/yyyy or m/d/yyyy
     let dateFormat = /^\d{1,2}\/\d{1,2}\/\d{4}$/g;
 
@@ -346,28 +346,29 @@ function getItems():ToDoItem[] {
 
 /**
  * Displays the given error message above the form
+ * @param errorMessage The error message being displayed
  */
  function displayError(errorMessage:string):void {
     // create an li to hold the error message
-    let newError:HTMLElement = document.createElement("li");
+    let errorContainer:HTMLElement = document.createElement("li");
 
     // give it the error class
-    newError.classList.add("error");
+    errorContainer.classList.add("error");
 
     // place error message within it
-    newError.innerText = errorMessage;
+    errorContainer.innerText = errorMessage;
 
     // grab the ul where errors are displayed
     let displayErrorsList:HTMLElement = getByID("error-list");
 
     // place new li within it
-    displayErrorsList.appendChild(newError);
+    displayErrorsList.appendChild(errorContainer);
 }
 
 /**
  * Clears out all errors displayed on the form when called
  */
- function clearErrors():void {
+ function clearAllErrors():void {
     let errorSummary = getByID("error-list");
     errorSummary.innerText = "";
 }
@@ -375,17 +376,17 @@ function getItems():ToDoItem[] {
 /**
  * Clears out all textboxes on the form when called
  */
-function clearTextBoxes():void {
+function clearAllTextBoxes():void {
     // grab all textboxes on form
     let allTextBoxes = document.querySelectorAll(".textbox");
 
     // run through all textboxes
-    for(let i = 0; i < allTextBoxes.length; i++) {
+    for(let currIndex = 0; currIndex < allTextBoxes.length; currIndex++) {
         // grab current textbox
-        let currentTextBox = <HTMLInputElement> allTextBoxes[i];
+        let currTextBox = <HTMLInputElement> allTextBoxes[currIndex];
 
         // set it's value to empty string
-        currentTextBox.value = "";
+        currTextBox.value = "";
     }
 }
 
@@ -393,39 +394,67 @@ function clearTextBoxes():void {
 **** ID ****
 ***********/
 
-let idCount = 1;  
+/**
+ * The number of to-do item's currently
+ * on the page/in local storage
+ */
+let totalIDCount = 1;  
 
-function incrementID():number {
-    return idCount++;
+/**
+ * When called, increments the total id count, and returns
+ * the resulting number
+ * @returns The number of currently existing to-do items + 1
+ */
+function incrementIDCount():number {
+    return totalIDCount++;
 }
 
-function resetID() {
-    // reset id count
-    idCount = 1;
+/**
+ * When called, reset's the total id count back to 1,
+ * and then runs through all item's in local storage and
+ * set's their id's based on the total id count
+ */
+function resetAllItemID():void {
+    // reset the total id count
+    totalIDCount = 1;
 
-    // get array of all currently stored items
-    let savedItems:ToDoItem[] = getItems();
+    // get all items currently stored in local storage
+    let savedItems:ToDoItem[] = getAllSavedItems();
 
-    // run through array
+    // run through all saved items
     for(let currIndex:number = 0; currIndex < savedItems.length; currIndex++) {
         // get current item in array
-        let currentItem = savedItems[currIndex];
+        let currItem = savedItems[currIndex];
 
-        // set that item's id
-        //let itemID = incrementID();
-        currentItem.id = incrementID();
+        // set that item's id based on the number
+        // of already existing to-do items
+        currItem.id = incrementIDCount();
     }
 
-    // convert all ToDoItems to JSON string
-    let currentItemsString:string = JSON.stringify(savedItems);
-
-    // save them in local storage
-    localStorage.setItem(toDoKey, currentItemsString);
+    // send all items back into local storage
+    pushToStorage(savedItems);
 }
 
 /****************
 **** HELPERS ****
 ****************/
+
+/**
+ * The key that holds all to-do item's in local storage
+ */
+const toDoKey:string = "todo-items";
+
+/**
+ * Takes an array of to-do item's and places it in local storage
+ * @param savedItems An array containing all the to-do items being saved
+ */
+ function pushToStorage(savedItems: ToDoItem[]):void {
+    // convert array to JSON string
+    let itemsString:string = JSON.stringify(savedItems);
+
+    // place in local storage
+    localStorage.setItem(toDoKey, itemsString);
+}
 
 /**
  * Sets up an onclick event for a button
