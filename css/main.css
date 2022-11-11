@@ -65,6 +65,10 @@ label {
     color: var(--colorBackground) !important;
 }
 
+.qs-square:not(.qs-empty):not(.qs-disabled):not(.qs-day):not(.qs-active):hover {
+    background: var(--colorSecondary) !important;
+}
+
 input[type="button"] {
     padding: .5em .7em;
     margin-top: .5em;
