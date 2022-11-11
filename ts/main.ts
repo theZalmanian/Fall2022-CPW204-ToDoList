@@ -62,7 +62,7 @@ function addItem():void {
  * the user's input
  * @returns The new ToDoItem object
  */
- function createItem():ToDoItem {
+function createItem():ToDoItem {
     // set an id for the item based on 
     // previously existing # of items
     let itemID:number = incrementIDCount();
@@ -142,7 +142,7 @@ function displayItem(currItem:ToDoItem):void {
  * @param currContainer The container that was clicked
  * @param currItem The ToDo Item being marked as complete/incomplete
  */
- function toggleCompletionStatus(currContainer:HTMLLIElement, currItem:ToDoItem):void {
+function toggleCompletionStatus(currContainer:HTMLLIElement, currItem:ToDoItem):void {
     // if the to-do item is already marked as completed
     if(currItem.isComplete) {
         // mark as uncompleted
@@ -252,7 +252,7 @@ function removeItemFromStorage(currItem:ToDoItem):void {
 /**
  * The key that holds all to-do item's in local storage
  */
- const toDoKey:string = "todo-items";
+const toDoKey:string = "todo-items";
 
 /**
  * Stores the passed through to-do item in local storage
@@ -315,7 +315,7 @@ function getAllSavedItems():ToDoItem[] {
  * When called gets all to-do items stored in local storage,
  * and displays them at the bottom of the page
  */
- function displayAllSavedItems():void {
+function displayAllSavedItems():void {
     // reset the id's of all items currently 
     // stored in local storage
     resetAllItemID();
@@ -341,7 +341,7 @@ function getAllSavedItems():ToDoItem[] {
  * the appropriate error message(s)
  * @returns True if all data is valid; otherwise False
  */
- function allDataValid():boolean {
+function allDataValid():boolean {
     // setup flag
     let allDataValid:boolean = true;
 
@@ -357,7 +357,7 @@ function getAllSavedItems():ToDoItem[] {
     }
 
     return allDataValid;
- }
+}
 
 /**
  * Checks if input is empty, and returns true or false correspondingly
@@ -384,7 +384,7 @@ function getAllSavedItems():ToDoItem[] {
  * @param id The id of the input being checked
  * @returns True if date is valid; otherwise false
  */
- function isValidDate(id:string):boolean {
+function isValidDate(id:string):boolean {
     // get value from textbox
     let userInput:string = getInputByID(id).value;
 
@@ -419,7 +419,7 @@ function getAllSavedItems():ToDoItem[] {
  * Displays the given error message above the form
  * @param errorMessage The error message being displayed
  */
- function displayError(errorMessage:string):void {
+function displayError(errorMessage:string):void {
     // create an li to hold the error message
     let errorContainer:HTMLElement = document.createElement("li");
 
@@ -439,7 +439,7 @@ function getAllSavedItems():ToDoItem[] {
 /**
  * Clears out all errors displayed on the form when called
  */
- function clearAllErrors():void {
+function clearAllErrors():void {
     let errorSummary = getByID("error-list");
     errorSummary.innerText = "";
 }
@@ -514,7 +514,7 @@ function resetAllItemID():void {
  * Takes an array of to-do item's and places it in local storage
  * @param savedItems An array containing all the to-do items being saved
  */
- function pushToStorage(savedItems: ToDoItem[]):void {
+function pushToStorage(savedItems: ToDoItem[]):void {
     // convert array to JSON string
     let itemsString:string = JSON.stringify(savedItems);
 
@@ -527,7 +527,7 @@ function resetAllItemID():void {
  * @param id The button's id
  * @param useFunction The function to be called when button is clicked
  */
- function setupButton(id:string, useFunction:() => void):void {
+function setupButton(id:string, useFunction:() => void):void {
     let button:HTMLElement = getByID(id);
     button.onclick = useFunction;
 }
@@ -537,7 +537,7 @@ function resetAllItemID():void {
  * @param id - The input's id
  * @returns The corresponding HTML Input Element
  */
- function getInputByID(id:string):HTMLInputElement {
+function getInputByID(id:string):HTMLInputElement {
     return <HTMLInputElement> getByID(id);
 }
 
@@ -546,6 +546,6 @@ function resetAllItemID():void {
  * @param id - The element's id
  * @returns The corresponding HTML Element
  */
- function getByID(id:string):HTMLElement {
+function getByID(id:string):HTMLElement {
     return document.getElementById(id);
 }
