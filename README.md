@@ -1,5 +1,5 @@
-# Fall2022-CPW204-ToDoList
-A To-Do List application with the following functionality:
+# To-Do List
+A basic To-Do list application with the following functionality:
 - Add items with a due date
 - Remove items from the list
 - Mark items as completed
